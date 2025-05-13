@@ -1,17 +1,17 @@
 {
   "scripts": {
-    "postinstall": "cd functions && npm install",
-    "build": "cd functions && npm run build",
-    "watch": "cd functions && npm run watch",
+    "postinstall": "cd functions && yarn install",
+    "build": "cd functions && yarn run build",
+    "watch": "cd functions && yarn run watch",
     "dev": "cd test_project && firebase ext:dev:emulators:start --test-config=firebase.json --test-params=test-params.env --project=nationalparks --import seed",
-    "test": "cd functions && npm run test",
-    "watch-tests": "cd functions && npm run watch-tests",
+    "test": "cd functions && yarn run test",
+    "watch-tests": "cd functions && yarn run watch-tests",
     "format": "prettier --write ."
   },
   "devDependencies": {
-    "@types/jest": "^27.0.1",
-    "firebase-admin": "^9.11.1",
-    "prettier": "2.3.2"
+    "@types/jest": "^29.5.14",
+    "firebase-admin": "^13.4.0",
+    "prettier": "3.5.3"
   },
   "private": true
 }
