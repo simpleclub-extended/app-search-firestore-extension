@@ -39,16 +39,21 @@ The process is basically described [here](https://firebase.google.com/docs/exten
 
    Otherwise create it here:
 
-   | ❗ Do not use `firebase ext:install` for this at it creates ressources in GCP that you may not want! |
-   | ---------------------------------------------------------------------------------------------------- |
+   1. "Install" extension
 
-   1. Decide on a name for your instance
+      ```shell
+      firebase ext:install <path to your local extension clone> --project=<project id>
+      ```
+
+      This will ask you some configuration questions. For the secreat value (api key), it will generate a new secret in secret manager.
+
+   2. Decide on a name for your instance
 
       It should be `<name of your use case>-firestore-elastic-app-search`
 
-   2. Reference extension locally
+   3. Rename the generated instance
 
-      In the `firebase.json`, reference the local path to the extension like so:
+      In the `firebase.json`, change the name that references the local path to the extension like so:
 
       ```json
       {
@@ -58,20 +63,9 @@ The process is basically described [here](https://firebase.google.com/docs/exten
       }
       ```
 
-   3. Create environment file
+   4. Rename the environment file
 
-      In the `extensions` subfolder, create a file with the name of your instance, e.g. `<your instance name>.env`.
-
-      Adjust the following example to your needs
-
-      ```env
-      APP_SEARCH_API_KEY=projects/<project number>/secrets/<name of the secret>/versions/latest
-      APP_SEARCH_ENGINE_NAME=<search engine name>
-      COLLECTION_PATH=<firestore collection name>
-      ENTERPRISE_SEARCH_URL=https://simpleclub.ent.europe-west1.gcp.cloud.es.io
-      INDEXED_FIELDS=email,name,someReference::custom_name
-      LOCATION=europe-west1
-      ```
+      In the `extensions` subfolder, rename the generated file with the name of your instance, e.g. `<your instance name>.env`.
 
 7. Deploy the extension
 
@@ -82,3 +76,5 @@ The process is basically described [here](https://firebase.google.com/docs/exten
    ```
 
    If the CLI asks you do DELETE not-listed functions, say NO!
+
+   This does change the `.firebaserc` in the backend. This change is fine and should be commited!
