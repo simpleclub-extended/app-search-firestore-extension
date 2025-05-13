@@ -1,28 +1,84 @@
-# Elastic App Search extension for Firestore
+# Simpleclub Fork of AppSearch
 
-This extension syncs data from Google's [Cloud Firestore](https://firebase.google.com/products/firestore) to [Elastic App Search](https://www.elastic.co/app-search/).
+This is a fork of the original Elastic Sync because that one is no longer maintained (https://github.com/elastic/app-search-firestore-extension).
 
-Out-of-the-box, Cloud Firestore provides no mechanism for full-text search on data. Syncing your Cloud Firestore data to Elastic App Search not only gives you a mechanism for full-text search on your data, it also lets you enjoy App Search's powerful relevance tuning features and search analytics data.
+This fork supports some improvements:
 
-**NOTE:** This extension is no longer maintained.  We encourage the community use the open and supported [connectors framework](https://www.elastic.co/guide/en/enterprise-search/current/connectors.html#connectors-overview-framework) to build an Elasticsearch connector for integration with Google Cloud Firestore.
+- Better Firestore Reference handling (storing the document path as a string, instead of a weird JavaScript object).
+- Updated to Node 20
 
-## Install
+## Install & Deploy this fork
 
-### From the web
+| ❗ **You should not use this for new installations! Only existing installations may be updated with the local fork!** |
+| --------------------------------------------------------------------------------------------------------------------- |
 
-Visit the following link: https://console.firebase.google.com/project/_/extensions/install?ref=elastic/firestore-elastic-app-search@0.4.1
+Installing from local source (skipping the Extension Hub) is a bit tricky but possible.
+The process is basically described [here](https://firebase.google.com/docs/extensions/publishers/get-started) but adjusted to fit our needs better.
 
-### From source
+1. You need to clone the repository first.
 
-After pulling this project source locally, follow these steps:
+2. Install dependencies
 
-```shell
-npm install -g firebase-tools
-npm install
-firebase login
-firebase ext:install . --project=<ID of your project>
-```
+   ```shell
+   yarn install
+   ```
 
-## Contributing
+3. Sign in to firebase!
 
-Plan to pull this code and run it locally? See [CONTRIBUTING.md](CONTRIBUTING.md).
+   ```shell
+   firebase login
+   ```
+
+4. Next, change into our backend repository.
+
+5. Then, go to the following folder: `config/extensions-simpleclub`
+
+6. Check if there is already a manifest / env file for the instance set up.
+
+   If yes, proceed with step 7!
+
+   Otherwise create it here:
+
+   | ❗ Do not use `firebase ext:install` for this at it creates ressources in GCP that you may not want! |
+   | ---------------------------------------------------------------------------------------------------- |
+
+   1. Decide on a name for your instance
+
+      It should be `<name of your use case>-firestore-elastic-app-search`
+
+   2. Reference extension locally
+
+      In the `firebase.json`, reference the local path to the extension like so:
+
+      ```json
+      {
+        "extensions": {
+          "<your instance name>": "../../../app-search-firestore-extension" // This should be your local path
+        }
+      }
+      ```
+
+   3. Create environment file
+
+      In the `extensions` subfolder, create a file with the name of your instance, e.g. `<your instance name>.env`.
+
+      Adjust the following example to your needs
+
+      ```env
+      APP_SEARCH_API_KEY=projects/<project number>/secrets/<name of the secret>/versions/latest
+      APP_SEARCH_ENGINE_NAME=<search engine name>
+      COLLECTION_PATH=<firestore collection name>
+      ENTERPRISE_SEARCH_URL=https://simpleclub.ent.europe-west1.gcp.cloud.es.io
+      INDEXED_FIELDS=email,name,someReference::custom_name
+      LOCATION=europe-west1
+      ```
+
+7. Deploy the extension
+
+   Before deploying it may make sense to uncomment all other extensions from the `firebase.json`, although this is not required. (Yes, comments work!)
+
+   ```shell
+   firebase deploy --only extensions --project <project-id>
+   ```
+
+   If the CLI asks you do DELETE not-listed functions, say NO!
